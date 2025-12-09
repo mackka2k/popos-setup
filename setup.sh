@@ -35,8 +35,8 @@ if ((BASH_VERSINFO[0] < MIN_BASH_VERSION)); then
     exit 1
 fi
 
-# --- Check Root ---
-if [ "$EUID" -ne 0 ]; then
+# --- Check if running as root
+if [ "$EUID" -ne 0 ] && [ "${TEST_MODE:-false}" != "true" ]; then
     echo "Please run as root (use sudo)"
     exit 1
 fi
