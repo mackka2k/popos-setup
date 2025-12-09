@@ -624,7 +624,7 @@ check_dependency() {
 
 resolve_dependencies() {
     local component="$1"
-    local dep="$2"
+    local dep="${DEPENDENCIES[$component]:-}"
     
     if [ -z "$dep" ]; then
         return 0
