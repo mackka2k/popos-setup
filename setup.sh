@@ -1595,16 +1595,26 @@ install_outlook() {
     # Note: Native Outlook not available for Linux
     # Installing Thunderbird as the best alternative with Exchange support
     if ! check_command thunderbird; then
-        apt install -y thunderbird
+        wait_for_apt_lock
+        # Install Thunderbird with all necessary add-ons and support
+        apt install -y \
+            thunderbird \
+            thunderbird-locale-en \
+            thunderbird-gnome-support \
+            xul-ext-lightning
         
-        log_success "Thunderbird installed"
-        log_info "For Outlook/Exchange: Install 'ExQuilla' or 'Owl for Exchange' add-on"
-        log_info "Alternative: Use Outlook web app in browser"
+        log_success "Thunderbird installed with calendar support"
+        log_info "For Outlook/Exchange: Install 'ExQuilla' or 'Owl for Exchange' add-on from Thunderbird Add-ons"
+        log_info "  1. Open Thunderbird"
+        log_info "  2. Go to Tools > Add-ons and Themes"
+        log_info "  3. Search for 'Owl for Exchange' (recommended for Exchange/Office 365)"
+        log_info "  4. Install and configure with your Exchange credentials"
+        log_info "Alternative: Use Outlook web app in browser at https://outlook.office.com"
     else
         log_info "Thunderbird already installed"
     fi
     
-    mark_installed "thunderbird" "$(thunderbird --version | awk '{print $3}')"
+    mark_installed "thunderbird" "$(thunderbird --version 2>/dev/null | awk '{print $3}' || echo 'installed')"
     update_progress
 }
 
