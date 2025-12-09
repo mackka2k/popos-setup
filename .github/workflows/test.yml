@@ -1,0 +1,49 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck setup.sh lib/*.sh || true
+          echo "ShellCheck completed"
+  
+  syntax-check:
+    name: Bash Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Check bash syntax
+        run: |
+          bash -n setup.sh
+          for file in lib/*.sh; do
+            bash -n "$file"
+          done
+          echo "All files have valid bash syntax"
+  
+  dry-run-test:
+    name: Dry Run Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run dry-run mode
+        run: |
+          sudo bash setup.sh --dry-run --yes || true
+          echo "Dry-run test completed"

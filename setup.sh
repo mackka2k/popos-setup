@@ -81,19 +81,21 @@ readonly TRANSACTION_LOG="${STATE_DIR}/transaction.log"
 mkdir -p "$LOG_DIR"
 
 # --- Runtime Variables ---
-AUTO_APPROVE=false
-CONFIG_FILE=""
-USE_CONFIG=false
-DRY_RUN=false
-PROFILE=""
+readonly AUTO_APPROVE=false
+CONFIG_FILE="" # Not readonly, can be set by --config
+readonly USE_CONFIG=false
+readonly DRY_RUN=false
+PROFILE="" # Not readonly, can be set by --profile
 BACKUP_MODE=false
 RESTORE_MODE=false
 RESTORE_FILE=""
-UNINSTALL_MODE=false
-LIST_MODE=false
-VERIFY_MODE=false
+readonly UNINSTALL_MODE=false
+UNINSTALL_TOOL="" # Not readonly, can be set by --uninstall
+readonly LIST_MODE=false
+readonly VERIFY_MODE=false
 UPDATE_MODE=false
-SELF_TEST_MODE=false
+readonly SELF_TEST_MODE=false
+readonly VERSION_FLAG=false # New flag
 ROLLBACK_MODE=false
 BACKUP_DIR="$BACKUP_DIR_DEFAULT"
 
@@ -159,52 +161,6 @@ EOF
 }
 
 parse_arguments() {
-    while [[ $# -gt 0 ]]; do
-    case $1 in
-        --yes|-y)
-            AUTO_APPROVE=true
-            shift
-            ;;
-        --config|-c)
-            if [ -z "${2:-}" ]; then
-                echo "Error: --config requires a filename argument"
-                exit 1
-            fi
-            CONFIG_FILE="$2"
-            USE_CONFIG=true
-            shift 2
-            ;;
-        --dry-run|-n)
-            DRY_RUN=true
-            shift
-            ;;
-        --profile|-p)
-            if [ -z "${2:-}" ]; then
-                echo "Error: --profile requires a profile name (minimal|developer|gamer|full)"
-                exit 1
-            fi
-            PROFILE="$2"
-            shift 2
-            ;;
-        --backup|-b)
-            BACKUP_MODE=true
-            shift
-            ;;
-        --restore|-r)
-            if [ -z "${2:-}" ]; then
-                echo "Error: --restore requires a backup file path"
-                exit 1
-            fi
-            RESTORE_MODE=true
-            RESTORE_FILE="$2"
-            shift 2
-            ;;
-        --uninstall|-u)
-            UNINSTALL_MODE=true
-            shift
-            ;;
-        --list|-l)
-            LIST_MODE=true
             shift
             ;;
         --verify|-v)
@@ -1852,6 +1808,16 @@ main() {
     
     if [ "$RESTORE_MODE" = true ]; then
         restore_from_backup "$RESTORE_FILE"
+        exit $?
+    fi
+    
+    if [ "$VERSION_MODE" = true ]; then
+        echo "Pop!_OS Setup Script v${SCRIPT_VERSION}"
+        exit 0
+    fi
+    
+    if [ "$UNINSTALL_MODE" = true ]; then
+        run_uninstall_suite
         exit $?
     fi
     
