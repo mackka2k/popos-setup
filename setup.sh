@@ -1568,14 +1568,19 @@ install_teams() {
         return 0
     fi
     
-    if ! flatpak list | grep -q "com.microsoft.Teams"; then
-        flatpak install -y flathub com.microsoft.Teams
+    if ! check_command teams; then
+        # Download and install Teams .deb package
+        local teams_deb="/tmp/teams.deb"
+        wget -O "$teams_deb" "https://go.microsoft.com/fwlink/p/?LinkID=2112886&clcid=0x409&culture=en-us&country=us"
+        wait_for_apt_lock
+        apt install -y "$teams_deb"
+        rm -f "$teams_deb"
         log_success "Microsoft Teams installed"
     else
-        log_info "Microsoft Teams already installed"
+        log_info "Teams already installed"
     fi
     
-    mark_installed "teams" "flatpak"
+    mark_installed "teams" "latest"
     update_progress
 }
 
