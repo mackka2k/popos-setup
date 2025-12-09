@@ -1,38 +1,79 @@
-# Logs and temporary files
-*.log
+# Pop!_OS Setup Script - Git Ignore File
+
+# Log files
 logs/
-*.tmp
-*.temp
+*.log
+setup_log_*.log
 
-# State and cache
+# State files
 /var/lib/popos-setup/
-.cache/
-*.bak
-
-# Test results
-test-results.txt
-
-# User-specific config
-config.yaml
-setup-config.yaml
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
 
 # Backup files
 *.backup
+*.bak
 *~
+.*.swp
+.*.swo
 
-# Downloaded files (cache)
-downloads/
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Downloaded packages
+*.deb
 *.tar.gz
 *.zip
-*.deb
+downloads/
+
+# User-specific configuration
+setup-config.yaml
+config.yaml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# OS-specific files
+Thumbs.db
+.Trash-*
+
+# Test artifacts
+test/integration/.docker/
+*.test
+
+# Cache directories
+.cache/
+__pycache__/
+*.pyc
+
+# Node modules (if any scripts use Node)
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Build artifacts
+dist/
+build/
+
+# Coverage reports
+coverage/
+*.coverage
+
+# Compiled files
+*.o
+*.so
+*.dylib
+*.exe
+
+# Package manager locks (keep versions.conf)
+package-lock.json
+yarn.lock
+
+# System state
+.installed_components
+state.json
