@@ -42,13 +42,6 @@ configure_nvidia_performance() {
         return 0
     fi
     
-    # Check if system76-power is available (Pop!_OS)
-    if check_command system76-power; then
-        log_info "Switching to NVIDIA graphics mode..."
-        system76-power graphics nvidia
-        log_success "NVIDIA graphics mode enabled"
-    fi
-    
     # Configure NVIDIA settings if nvidia-settings is available
     if check_command nvidia-settings; then
         log_info "Applying NVIDIA performance settings..."
