@@ -622,9 +622,9 @@ check_dependency() {
     return 0
 }
 
-resolve_dependencies() {
+resolvcheck_dependency() {
     local component="$1"
-    local dep="${DEPENDENCIES[$component]:-}"
+    local dep="$2"
     
     if [ -z "$dep" ]; then
         return 0
@@ -632,8 +632,13 @@ resolve_dependencies() {
     
     if ! is_installed "$dep"; then
         log_info "Resolving dependency: $dep for $component"
-        # Recursively install dependency
-        install_component "$dep"
+        # Call the installation function for the dependency
+        case "$dep" in
+            kubectl) install_kubectl ;;
+            docker) install_docker ;;
+            helm) install_helm ;;
+            *) log_warn "Unknown dependency: $dep" ;;
+        esac
     fi
 }
 
