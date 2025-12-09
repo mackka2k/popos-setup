@@ -312,6 +312,34 @@ get_user_info() {
     echo "$target_user:$target_home"
 }
 
+wait_for_apt_lock() {
+    local max_wait=60
+    local waited=0
+    
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
+          fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || \
+          fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+        
+        if [ $waited -eq 0 ]; then
+            log_info "Waiting for other package managers to finish..."
+        fi
+        
+        sleep 2
+        waited=$((waited + 2))
+        
+        if [ $waited -ge $max_wait ]; then
+            log_warn "Timeout waiting for apt lock. Continuing anyway..."
+            return 1
+        fi
+    done
+    
+    if [ $waited -gt 0 ]; then
+        log_success "Package manager is now available"
+    fi
+    
+    return 0
+}
+
 ################################################################################
 # PLATFORM DETECTION
 ################################################################################
@@ -878,7 +906,9 @@ update_system() {
         return 0
     fi
     
-    apt update && apt dist-upgrade -y
+    wait_for_apt_lock
+    apt update
+    apt upgrade -y
     apt autoremove -y && apt autoclean -y
     
     log_info "Checking for firmware updates..."
@@ -922,7 +952,6 @@ install_common_tools() {
         vim
         tmux
         jq
-        yq
         fzf
         ripgrep
         exa
@@ -932,6 +961,12 @@ install_common_tools() {
     )
     
     apt install -y "${tools[@]}"
+    
+    # Install yq via snap (not available in apt)
+    if ! check_command yq; then
+        log_info "Installing yq via snap..."
+        snap install yq
+    fi
     
     # Install Brave browser separately (requires special repo)
     install_brave_browser
@@ -1350,29 +1385,8 @@ install_helm() {
     update_progress
 }
 
-install_php() {
-    log_info "Installing PHP 8.2..."
-    
-    if [ "$DRY_RUN" = true ]; then
-        log_info "[DRY-RUN] Would install PHP"
-        update_progress
-        return 0
-    fi
-    
-    if ! check_command php; then
-        add-apt-repository -y ppa:ondrej/php
-        apt update
-        apt install -y php8.2 php8.2-cli php8.2-common php8.2-curl php8.2-mbstring \
-            php8.2-xml php8.2-zip php8.2-mysql php8.2-pgsql php8.2-sqlite3 \
-            php8.2-gd php8.2-intl php8.2-bcmath composer
-        log_success "PHP installed"
-    else
-        log_info "PHP already installed"
-    fi
-    
-    mark_installed "php" "$(php --version | head -1 | awk '{print $2}')"
-    update_progress
-}
+# PHP removed due to dependency conflicts with libgd3 on Pop!_OS 22.04
+# Users can install PHP manually if needed: sudo add-apt-repository ppa:ondrej/php
 
 install_ruby() {
     log_info "Installing Ruby..."
@@ -1869,9 +1883,7 @@ main() {
         install_dotnet
     fi
     
-    if ask_permission "Install PHP 8.2?"; then
-        install_php
-    fi
+    # PHP removed due to dependency conflicts
     
     if ask_permission "Install Ruby?"; then
         install_ruby
