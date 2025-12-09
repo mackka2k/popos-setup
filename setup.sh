@@ -1560,7 +1560,28 @@ install_discord() {
 }
 
 # Microsoft Teams removed - Microsoft has deprecated the standalone Linux client
-# Users should use Teams web app: https://teams.microsoft.com
+# Using Teams Portal (web wrapper) as alternative
+
+install_teams() {
+    log_info "Installing Teams Portal (web wrapper for Microsoft Teams)..."
+    
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY-RUN] Would install Teams Portal"
+        update_progress
+        return 0
+    fi
+    
+    if ! check_command teams-for-linux; then
+        # Install Teams Portal via snap
+        snap install teams-for-linux
+        log_success "Teams Portal installed"
+    else
+        log_info "Teams Portal already installed"
+    fi
+    
+    mark_installed "teams" "portal"
+    update_progress
+}
 
 install_outlook() {
     log_info "Installing Outlook (via Thunderbird with Exchange support)..."
@@ -1941,7 +1962,9 @@ main() {
         install_discord
     fi
     
-    # Microsoft Teams removed (deprecated by Microsoft)
+    if ask_permission "Install Microsoft Teams (Portal web wrapper)?"; then
+        install_teams
+    fi
     
     if ask_permission "Install Outlook (via Thunderbird with Exchange support)?"; then
         install_outlook
