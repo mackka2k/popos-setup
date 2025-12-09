@@ -896,7 +896,6 @@ install_common_tools() {
         unzip
         git
         tilix
-        chromium-browser
         htop
         neofetch
         vim
@@ -912,6 +911,9 @@ install_common_tools() {
     )
     
     apt install -y "${tools[@]}"
+    
+    # Install Brave browser separately (requires special repo)
+    install_brave_browser
     
     log_success "Common tools installed"
     mark_installed "common_dev_tools" "latest"
@@ -1547,6 +1549,54 @@ install_outlook() {
     update_progress
 }
 
+install_brave_browser() {
+    log_info "Installing Brave browser..."
+    
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY-RUN] Would install Brave browser"
+        return 0
+    fi
+    
+    if ! check_command brave-browser; then
+        # Add Brave repository
+        curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list
+        
+        apt update
+        apt install -y brave-browser
+        log_success "Brave browser installed"
+    else
+        log_info "Brave browser already installed"
+    fi
+    
+    mark_installed "brave" "$(brave-browser --version | awk '{print $2}')"
+}
+
+install_steam() {
+    log_info "Installing Steam..."
+    
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY-RUN] Would install Steam"
+        return 0
+    fi
+    
+    if ! check_command steam; then
+        # Enable 32-bit architecture (required for Steam)
+        dpkg --add-architecture i386
+        apt update
+        
+        # Install Steam
+        apt install -y steam-installer
+        
+        log_success "Steam installed"
+        log_info "Launch Steam from applications menu to complete setup"
+    else
+        log_info "Steam already installed"
+    fi
+    
+    mark_installed "steam" "installed"
+}
+
 git_config_check() {
     log_info "Checking Git configuration..."
     
@@ -1851,6 +1901,11 @@ main() {
     
     if ask_permission "Install Outlook (Thunderbird)?"; then
         install_outlook
+    fi
+    
+    # Gaming & Browsers
+    if ask_permission "Install Steam?"; then
+        install_steam
     fi
     
     # Shell
