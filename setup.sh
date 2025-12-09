@@ -1908,6 +1908,10 @@ main() {
         install_steam
     fi
     
+    if ask_permission "Optimize system for gaming (NVIDIA, GameMode, CPU)?"; then
+        optimize_for_gaming
+    fi
+    
     # Shell
     if ask_permission "Setup ZSH and Oh-My-ZSH?"; then
         setup_zsh
