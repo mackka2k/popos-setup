@@ -622,7 +622,7 @@ check_dependency() {
     return 0
 }
 
-resolvcheck_dependency() {
+resolve_dependencies() {
     local component="$1"
     local dep="$2"
     
