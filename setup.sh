@@ -1991,8 +1991,9 @@ main() {
     log_info "Time elapsed: ${elapsed_min}m ${elapsed_sec}s"
     log_info "Log file: $LOG_FILE"
     
-    if [ ${#BACKUP_FILES[@]} -gt 0 ]; then
-        log_info "Backups created: ${#BACKUP_FILES[@]} files in $BACKUP_DIR"
+    # Show backup files if any
+    if [ -n "${BACKUP_FILES:-}" ] && [ ${#BACKUP_FILES[@]} -gt 0 ]; then
+        log_info "Backup files created: ${#BACKUP_FILES[@]}"
     fi
     
     if [ "$DRY_RUN" = false ]; then
