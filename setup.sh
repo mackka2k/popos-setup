@@ -71,9 +71,14 @@ readonly LOG_DIR="${SCRIPT_DIR}/logs"
 
 # --- Files ---
 readonly VERSIONS_FILE="${SCRIPT_DIR}/versions.conf"
-LOG_FILE="${LOG_DIR}/setup_log_$(date +%F_%T).log"
-VERIFICATION_LOG="${LOG_DIR}/verification_$(date +%F_%T).log"
-TRANSACTION_LOG="${STATE_DIR}/transaction.log"
+
+# --- Logging ---
+readonly LOG_FILE="${LOG_DIR}/setup_log_$(date +%Y-%m-%d_%H:%M:%S).log"
+readonly VERIFICATION_LOG="${LOG_DIR}/verification_$(date +%Y-%m-%d_%H:%M:%S).log"
+readonly TRANSACTION_LOG="${STATE_DIR}/transaction.log"
+
+# Create log directory
+mkdir -p "$LOG_DIR"
 
 # --- Runtime Variables ---
 AUTO_APPROVE=false
