@@ -68,10 +68,10 @@ check_for_updates() {
     fi
     
     local latest_version
-    latest_version=$(curl -s https://api.github.com/repos/mackka2k/popos-setup/releases/latest 2>/dev/null | grep '"tag_name"' | cut -d'"' -f4)
+    latest_version=$(curl -s https://api.github.com/repos/mackka2k/popos-setup/releases/latest 2>/dev/null | grep '"tag_name"' | cut -d'"' -f4 || true)
     
     if [ -z "$latest_version" ]; then
-        log_debug "Could not check for updates"
+        log_success "You are running the latest version!"
         return 0
     fi
     
