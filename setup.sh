@@ -1543,14 +1543,19 @@ install_discord() {
         return 0
     fi
     
-    if ! flatpak list | grep -q "com.discordapp.Discord"; then
-        flatpak install -y flathub com.discordapp.Discord
+    if ! check_command discord; then
+        # Download and install Discord .deb package
+        local discord_deb="/tmp/discord.deb"
+        wget -O "$discord_deb" "https://discord.com/api/download?platform=linux&format=deb"
+        wait_for_apt_lock
+        apt install -y "$discord_deb"
+        rm -f "$discord_deb"
         log_success "Discord installed"
     else
         log_info "Discord already installed"
     fi
     
-    mark_installed "discord" "flatpak"
+    mark_installed "discord" "latest"
     update_progress
 }
 
