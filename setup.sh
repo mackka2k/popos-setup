@@ -101,7 +101,7 @@ UPDATE_MODE=false
 readonly SELF_TEST_MODE=false
 readonly VERSION_FLAG=false # New flag
 ROLLBACK_MODE=false
-readonly TUI_MODE=false # New flag for TUI mode
+TUI_MODE=false # Not readonly, can be set by --tui
 BACKUP_DIR="$BACKUP_DIR_DEFAULT"
 
 # --- Progress Tracking ---
