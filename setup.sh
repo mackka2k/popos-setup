@@ -160,67 +160,79 @@ EOF
 
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
-        case $1 in
-            -y|--yes)
-                AUTO_APPROVE=true
-                shift
-                ;;
-            -c|--config)
-                CONFIG_FILE="$2"
-                USE_CONFIG=true
-                shift 2
-                ;;
-            -n|--dry-run)
-                DRY_RUN=true
-                shift
-                ;;
-            -p|--profile)
-                PROFILE="$2"
-                shift 2
-                ;;
-            -b|--backup)
-                BACKUP_MODE=true
-                shift
-                ;;
-            -r|--restore)
-                RESTORE_MODE=true
-                RESTORE_FILE="$2"
-                shift 2
-                ;;
-            -u|--uninstall)
-                UNINSTALL_MODE=true
-                shift
-                ;;
-            -l|--list)
-                LIST_MODE=true
-                shift
-                ;;
-            -v|--verify)
-                VERIFY_MODE=true
-                shift
-                ;;
-            --update)
-                UPDATE_MODE=true
-                shift
-                ;;
-            --self-test)
-                SELF_TEST_MODE=true
-                shift
-                ;;
-            --rollback)
-                ROLLBACK_MODE=true
-                shift
-                ;;
-            -h|--help)
-                show_help
-                exit 0
-                ;;
-            *)
-                echo "Unknown argument: $1"
-                show_help
+    case $1 in
+        --yes|-y)
+            AUTO_APPROVE=true
+            shift
+            ;;
+        --config|-c)
+            if [ -z "${2:-}" ]; then
+                echo "Error: --config requires a filename argument"
                 exit 1
-                ;;
-        esac
+            fi
+            CONFIG_FILE="$2"
+            USE_CONFIG=true
+            shift 2
+            ;;
+        --dry-run|-n)
+            DRY_RUN=true
+            shift
+            ;;
+        --profile|-p)
+            if [ -z "${2:-}" ]; then
+                echo "Error: --profile requires a profile name (minimal|developer|gamer|full)"
+                exit 1
+            fi
+            PROFILE="$2"
+            shift 2
+            ;;
+        --backup|-b)
+            BACKUP_MODE=true
+            shift
+            ;;
+        --restore|-r)
+            if [ -z "${2:-}" ]; then
+                echo "Error: --restore requires a backup file path"
+                exit 1
+            fi
+            RESTORE_MODE=true
+            RESTORE_FILE="$2"
+            shift 2
+            ;;
+        --uninstall|-u)
+            UNINSTALL_MODE=true
+            shift
+            ;;
+        --list|-l)
+            LIST_MODE=true
+            shift
+            ;;
+        --verify|-v)
+            VERIFY_MODE=true
+            shift
+            ;;
+        --update)
+            UPDATE_MODE=true
+            shift
+            ;;
+        --self-test)
+            SELF_TEST_MODE=true
+            shift
+            ;;
+        --rollback)
+            ROLLBACK_MODE=true
+            shift
+            ;;
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Run './setup.sh --help' for usage information"
+            exit 1
+            ;;
+    esac
     done
 }
 
