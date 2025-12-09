@@ -217,40 +217,33 @@ parse_arguments() {
                 PROFILE="$2"
                 shift 2
                 ;;
+            --backup)
+                BACKUP_MODE=true
+                shift
+                ;;
+            --restore)
+                if [ -z "${2:-}" ]; then
+                    echo "Error: --restore requires a backup file path"
+                    exit 1
+                fi
+                RESTORE_MODE=true
+                RESTORE_FILE="$2"
+                shift 2
+                ;;
+            --update)
+                UPDATE_MODE=true
+                shift
+                ;;
+            --rollback)
+                ROLLBACK_MODE=true
+                shift
+                ;;
             *)
                 echo "Unknown option: $1"
                 show_help
                 exit 1
                 ;;
         esac
-    done
-}
-        --verify|-v)
-            VERIFY_MODE=true
-            shift
-            ;;
-        --update)
-            UPDATE_MODE=true
-            shift
-            ;;
-        --self-test)
-            SELF_TEST_MODE=true
-            shift
-            ;;
-        --rollback)
-            ROLLBACK_MODE=true
-            shift
-            ;;
-        --help|-h)
-            show_help
-            exit 0
-            ;;
-        *)
-            echo "Unknown option: $1"
-            echo "Run './setup.sh --help' for usage information"
-            exit 1
-            ;;
-    esac
     done
 }
 
