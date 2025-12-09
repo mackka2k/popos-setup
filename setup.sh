@@ -1152,10 +1152,27 @@ install_rust() {
         return 0
     fi
     
-        log_info "Rust already installed"
+    if check_command rustc; then
+        local installed_version=$(rustc --version | awk '{print $2}')
+        log_info "Rust already installed (version $installed_version)"
+        mark_installed "rust" "$installed_version"
+        update_progress
+        return 0
     fi
     
-    mark_installed "rust" "$(rustc --version 2>/dev/null | awk '{print $2}' || echo 'unknown')"
+    local user_info
+    user_info=$(get_user_info)
+    local target_user="${user_info%%:*}"
+    
+    # Download rustup installer
+    local rustup_script="/tmp/rustup-init.sh"
+    download_file "https://sh.rustup.rs" "$rustup_script"
+    
+    sudo -u "$target_user" sh "$rustup_script" -y
+    rm -f "$rustup_script"
+    
+    log_success "Rust installed"
+    mark_installed "rust" "$(sudo -u \"$target_user\" rustc --version 2>/dev/null | awk '{print $2}' || echo 'latest')"
     update_progress
 }
 
