@@ -1930,6 +1930,10 @@ main() {
         configure_firewall
     fi
     
+    if ask_permission "Apply system configurations (Git, GNOME, Vim, limits, etc.)?"; then
+        apply_all_configurations
+    fi
+    
     # Configuration checks
     git_config_check
     setup_ssh_keys
