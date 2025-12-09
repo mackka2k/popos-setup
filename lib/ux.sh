@@ -138,7 +138,9 @@ health_check() {
         return 0
     else
         log_error "Health check failed with $issues critical issue(s)"
-        if ! ask_permission "Continue anyway?"; then
+        if ask_permission "Continue anyway?"; then
+            return 0
+        else
             exit 1
         fi
     fi
