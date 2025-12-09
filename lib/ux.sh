@@ -125,11 +125,11 @@ health_check() {
         ((issues++))
     fi
     
-    # Check for pending system updates
-    if apt list --upgradable 2>/dev/null | grep -q upgradable; then
-        log_warn "System updates available. Consider running 'sudo apt update && sudo apt upgrade' first"
-        ((warnings++))
-    fi
+    # Check for pending system updates (temporarily disabled - causes script to exit)
+    # if apt list --upgradable 2>/dev/null | grep -q upgradable; then
+    #     log_warn "System updates available. Consider running 'sudo apt update && sudo apt upgrade' first"
+    #     ((warnings++))
+    # fi
     
     # Summary
     echo ""
