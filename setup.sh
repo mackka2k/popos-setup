@@ -1139,7 +1139,7 @@ install_go() {
     fi
     
     log_success "Go installed"
-    mark_installed "go" "go${go_version}"
+    mark_installed "go" "go${GO_VERSION}"
     update_progress
 }
 
@@ -1152,20 +1152,6 @@ install_rust() {
         return 0
     fi
     
-    if ! check_command rustc; then
-        local user_info
-        user_info=$(get_user_info)
-        local target_user="${user_info%%:*}"
-        
-        # Download rustup installer
-        local rustup_script="/tmp/rustup-init.sh"
-        download_file "https://sh.rustup.rs" "$rustup_script"
-        
-        sudo -u "$target_user" sh "$rustup_script" -y
-        rm -f "$rustup_script"
-        
-        log_success "Rust installed"
-    else
         log_info "Rust already installed"
     fi
     
@@ -1193,7 +1179,7 @@ install_python() {
     update_progress
 }
 
-install_node() {
+install_nodejs() {
     log_info "Installing NodeJS 20..."
     
     if [ "$DRY_RUN" = true ]; then
@@ -1202,13 +1188,25 @@ install_node() {
         return 0
     fi
     
-    if ! check_command node; then
-        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-        apt install -y nodejs
-        log_success "NodeJS installed"
-    else
-        log_info "NodeJS already installed"
+    # Check if Node.js 20 is already installed
+    if check_command node; then
+        local installed_version=$(node --version | sed 's/v//')
+        local major_version=$(echo "$installed_version" | cut -d. -f1)
+        if [ "$major_version" -ge 20 ]; then
+            log_info "Node.js already installed (version $installed_version)"
+            mark_installed "nodejs" "$installed_version"
+            update_progress
+            return 0
+        else
+            log_info "Node.js $installed_version found, upgrading to v20..."
+        fi
     fi
+    
+    # Install Node.js 20
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    wait_for_apt_lock
+    apt install -y nodejs
+    log_success "NodeJS installed"
     
     mark_installed "nodejs" "$(node --version)"
     update_progress
