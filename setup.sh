@@ -46,12 +46,15 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- Source Library Modules ---
 if [ -d "$SCRIPT_DIR/lib" ]; then
-    for lib in "$SCRIPT_DIR/lib"/*.sh; do
-        if [ -f "$lib" ]; then
-            # shellcheck source=/dev/null
-            source "$lib"
-        fi
-    done
+    source "$SCRIPT_DIR/lib/ssh.sh"
+    source "$SCRIPT_DIR/lib/shell-plugins.sh"
+    source "$SCRIPT_DIR/lib/optimization.sh"
+    source "$SCRIPT_DIR/lib/firewall.sh"
+    source "$SCRIPT_DIR/lib/cache.sh"
+    source "$SCRIPT_DIR/lib/configuration.sh"
+    source "$SCRIPT_DIR/lib/gaming.sh"
+    source "$SCRIPT_DIR/lib/ux.sh"
+    source "$SCRIPT_DIR/lib/bandwidth.sh"
 fi
 
 # --- Configuration & Colors ---
@@ -2008,6 +2011,11 @@ main() {
     
     if ask_permission "Optimize system for gaming (NVIDIA, GameMode, CPU)?"; then
         optimize_for_gaming
+    fi
+    
+    # Bandwidth optimization
+    if ask_permission "Optimize download speeds (parallel downloads, mirror selection)?"; then
+        optimize_bandwidth
     fi
     
     # Shell
