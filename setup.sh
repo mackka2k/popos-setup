@@ -26,7 +26,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # --- Version ---
-readonly SCRIPT_VERSION="3.0.0-beta"
+readonly SCRIPT_VERSION="3.0.0"
 readonly MIN_BASH_VERSION=4
 
 # --- Check Bash Version ---
@@ -64,7 +64,6 @@ readonly CYAN='\033[0;36m'
 readonly NC='\033[0m' # No Color
 
 # --- Directories ---
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly STATE_DIR="/var/lib/popos-setup"
 readonly STATE_FILE="${STATE_DIR}/state.json"
 readonly BACKUP_DIR_DEFAULT="${HOME}/.popos-setup-backups"
