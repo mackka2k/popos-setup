@@ -1,8 +1,8 @@
-name: Test
+name: Test Suite
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
@@ -34,7 +34,50 @@ jobs:
           for file in lib/*.sh; do
             bash -n "$file"
           done
-          echo "All files have valid bash syntax"
+          echo "✓ All files have valid bash syntax"
+  
+  unit-tests:
+    name: BATS Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install BATS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats
+      
+      - name: Run unit tests
+        run: |
+          cd test
+          bats unit/*.bats
+  
+  integration-tests:
+    name: Docker Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Run Ubuntu integration test
+        run: |
+          cd test/integration
+          docker-compose run --rm ubuntu-test
+      
+      - name: Run Pop!_OS integration test
+        run: |
+          cd test/integration
+          docker-compose run --rm popos-test
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          cd test/integration
+          docker-compose down
   
   dry-run-test:
     name: Dry Run Test

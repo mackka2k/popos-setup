@@ -1,0 +1,33 @@
+FROM ubuntu:22.04
+
+# Simulate Pop!_OS environment
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Pop!_OS specific packages
+RUN apt-get update && apt-get install -y \
+    sudo \
+    curl \
+    wget \
+    git \
+    ca-certificates \
+    lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create Pop!_OS identifier
+RUN echo "pop" > /etc/pop-os/os-release || mkdir -p /etc/pop-os && echo "pop" > /etc/pop-os/os-release
+
+# Create test user
+RUN useradd -m -s /bin/bash testuser && \
+    echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Copy script files
+COPY . /opt/setup
+WORKDIR /opt/setup
+
+# Set ownership
+RUN chown -R testuser:testuser /opt/setup
+
+USER testuser
+
+# Run tests
+CMD ["bash", "-c", "sudo ./setup.sh --dry-run --yes"]

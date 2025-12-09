@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  ubuntu-test:
+    build:
+      context: ../..
+      dockerfile: test/integration/Dockerfile.ubuntu
+    container_name: setup-test-ubuntu
+    volumes:
+      - ../..:/opt/setup:ro
+    environment:
+      - CI=true
+      - DRY_RUN=true
+
+  popos-test:
+    build:
+      context: ../..
+      dockerfile: test/integration/Dockerfile.popos
+    container_name: setup-test-popos
+    volumes:
+      - ../..:/opt/setup:ro
+    environment:
+      - CI=true
+      - DRY_RUN=true
