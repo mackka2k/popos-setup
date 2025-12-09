@@ -1891,7 +1891,7 @@ main() {
     fi
     
     if ask_permission "Install NodeJS 20?"; then
-        install_node
+        install_nodejs
     fi
     
     if ask_permission "Install .NET 8.0 SDK?"; then
