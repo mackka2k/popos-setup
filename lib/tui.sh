@@ -40,10 +40,19 @@ show_main_menu() {
         10 "Run System Health Check" \
         11 "Update Script" \
         12 "Exit" \
-        3>&1 1>&2 2>&3)
+        2>&1 >/dev/tty)
     
+    local exit_code=$?
     clear
+    
+    # If user cancelled (ESC), return empty
+    if [ $exit_code -ne 0 ]; then
+        echo ""
+        return 1
+    fi
+    
     echo "$choice"
+    return 0
 }
 
 # Show component selection checklist
@@ -201,12 +210,22 @@ run_tui_mode() {
     while true; do
         local choice
         choice=$(show_main_menu)
+        local menu_exit=$?
+        
+        # If user cancelled or no choice, ask to exit
+        if [ $menu_exit -ne 0 ] || [ -z "$choice" ]; then
+            if show_yesno "Exit" "Exit setup script?"; then
+                clear
+                exit 0
+            else
+                continue
+            fi
+        fi
         
         case "$choice" in
             1)
                 # Quick Install
                 if show_yesno "Quick Install" "Install recommended development tools?\n\nThis will install:\n- Docker\n- Git\n- VS Code\n- Node.js\n- Python\n- Go"; then
-                    install_docker
                     install_git
                     install_vscode
                     install_nodejs
