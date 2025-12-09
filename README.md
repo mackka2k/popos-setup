@@ -1,6 +1,18 @@
 # Pop!_OS Developer Setup Script
 
-A production-ready, enterprise-grade setup script for Pop!_OS and Ubuntu-based systems. Automates the installation and configuration of development tools, programming languages, IDEs, and system tweaks.
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/mackka2k/popos-setup/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Shell](https://img.shields.io/badge/shell-bash-orange.svg)](https://www.gnu.org/software/bash/)
+[![Platform](https://img.shields.io/badge/platform-Pop!_OS%20%7C%20Ubuntu-purple.svg)](https://pop.system76.com/)
+[![Quality](https://img.shields.io/badge/quality-A++-brightgreen.svg)](#)
+
+> **Enterprise-grade automation script for Pop!_OS and Ubuntu systems**
+> 
+> Automate your development environment setup with production-ready quality, comprehensive security, and advanced features.
+
+---
+
+## ✨ Features the installation and configuration of development tools, programming languages, IDEs, and system tweaks.
 
 ## Features
 

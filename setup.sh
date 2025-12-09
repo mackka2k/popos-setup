@@ -1741,8 +1741,18 @@ run_rollback() {
 main() {
     START_TIME=$(date +%s)
     
+    # Show welcome banner
+    show_banner
+    
     log_info "Pop!_OS Setup Script v${SCRIPT_VERSION}"
     log_info "Log file: $LOG_FILE"
+    echo ""
+    
+    # Check for updates
+    check_for_updates
+    
+    # Run health check
+    health_check
     
     # Initialize state
     init_state
