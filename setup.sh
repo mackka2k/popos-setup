@@ -161,8 +161,70 @@ EOF
 }
 
 parse_arguments() {
-            shift
-            ;;
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -v|--version)
+                VERSION_MODE=true
+                shift
+                ;;
+            -y|--yes)
+                AUTO_APPROVE=true
+                shift
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            --test)
+                SELF_TEST_MODE=true
+                shift
+                ;;
+            --list|--list-installed)
+                LIST_MODE=true
+                shift
+                ;;
+            --verify)
+                VERIFY_MODE=true
+                shift
+                ;;
+            --uninstall)
+                if [ -z "${2:-}" ]; then
+                    echo "Error: --uninstall requires a tool name"
+                    exit 1
+                fi
+                UNINSTALL_MODE=true
+                UNINSTALL_TOOL="$2"
+                shift 2
+                ;;
+            --config)
+                if [ -z "${2:-}" ]; then
+                    echo "Error: --config requires a filename argument"
+                    exit 1
+                fi
+                CONFIG_FILE="$2"
+                USE_CONFIG=true
+                shift 2
+                ;;
+            --profile)
+                if [ -z "${2:-}" ]; then
+                    echo "Error: --profile requires a profile name"
+                    exit 1
+                fi
+                PROFILE="$2"
+                shift 2
+                ;;
+            *)
+                echo "Unknown option: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
         --verify|-v)
             VERIFY_MODE=true
             shift
