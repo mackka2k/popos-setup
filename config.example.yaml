@@ -1,0 +1,121 @@
+# Pop!_OS Setup Script Configuration
+# Copy this file to config.yaml and customize as needed
+# Usage: sudo ./setup.sh --config config.yaml
+
+# Installation Profile
+# Options: minimal, developer, full, custom
+profile: developer
+
+# System Updates
+system:
+  update_os: true
+  update_firmware: true
+  apply_tweaks: true
+  inotify_limit: 10000000
+
+# Development Tools
+dev_tools:
+  common_tools: true
+  build_essential: true
+  git: true
+  vim: true
+  tmux: true
+  modern_cli_tools: true  # fzf, ripgrep, bat, exa, etc.
+
+# Programming Languages
+languages:
+  java: true
+  go: true
+  rust: true
+  python: true
+  nodejs: true
+  dotnet: true
+  php: false
+  ruby: false
+
+# Databases
+databases:
+  postgresql: false
+  mysql: false
+  mongodb: false
+
+# IDEs & Editors
+ides:
+  vscode: true
+  zed: false
+  eclipse: false
+  postman: true
+
+# Cloud & DevOps
+cloud:
+  docker: true
+  podman: false
+  kubectl: true
+  helm: true
+  terraform: true
+  aws_cli: true
+  azure_cli: false
+  gcloud_cli: false
+  github_cli: true
+
+# Virtualization
+virtualization:
+  enabled: false
+  platform: kvm  # Options: virtualbox, kvm, both
+
+# Shell Configuration
+shell:
+  setup_zsh: true
+  install_ohmyzsh: true
+  theme: blinks
+  plugins:
+    - git
+    - docker
+    - kubectl
+    - terraform
+    - golang
+    - rust
+    - npm
+    - zsh-syntax-highlighting
+
+# Security
+security:
+  yubikey_support: false
+  usbguard: false
+  setup_ssh_keys: true
+  setup_gpg_keys: true
+
+# Media & Utilities
+utilities:
+  vlc: true
+  codecs: true
+  wireshark: false
+  font_manager: true
+  themes: true
+
+# Productivity Apps
+productivity:
+  discord: false
+  teams: false
+  outlook: false  # Installs Thunderbird with Exchange support
+
+# Azure Tools
+azure:
+  storage_explorer: false
+
+# Backup & Safety
+backup:
+  create_backup: true
+  backup_dir: ~/.popos-setup-backups
+
+# Logging
+logging:
+  verbose: false
+  json_format: false
+  log_dir: ./logs
+
+# Version Overrides (optional)
+# Uncomment to override versions from versions.conf
+# version_overrides:
+#   go: 1.22.0
+#   nodejs: 18
