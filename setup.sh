@@ -55,7 +55,6 @@ if [ -d "$SCRIPT_DIR/lib" ]; then
     source "$SCRIPT_DIR/lib/gaming.sh"
     source "$SCRIPT_DIR/lib/ux.sh"
     source "$SCRIPT_DIR/lib/bandwidth.sh"
-    source "$SCRIPT_DIR/lib/tui.sh"
 fi
 
 # --- Configuration & Colors ---
@@ -101,7 +100,6 @@ UPDATE_MODE=false
 readonly SELF_TEST_MODE=false
 VERSION_MODE=false # Not readonly, can be set by --version
 ROLLBACK_MODE=false
-TUI_MODE=false # Not readonly, can be set by --tui
 BACKUP_DIR="$BACKUP_DIR_DEFAULT"
 
 # --- Progress Tracking ---
@@ -241,10 +239,6 @@ parse_arguments() {
                 ;;
             --rollback)
                 ROLLBACK_MODE=true
-                shift
-                ;;
-            --tui)
-                TUI_MODE=true
                 shift
                 ;;
             *)
@@ -1882,11 +1876,6 @@ main() {
     
     if [ "$UNINSTALL_MODE" = true ]; then
         run_uninstall_suite
-        exit $?
-    fi
-    
-    if [ "$TUI_MODE" = true ]; then
-        run_tui_mode
         exit $?
     fi
     
